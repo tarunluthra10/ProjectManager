@@ -16,7 +16,7 @@ namespace ProjectManager.Web
         }
         public void Connection()
         {
-           try
+            try
             {
                 SqlConnection cnn;
                 cnn = new SqlConnection(connetionString);
@@ -24,27 +24,29 @@ namespace ProjectManager.Web
                 SqlCommand command = new SqlCommand("SELECT count(1) FROM Parent_Task", cnn);
                 var count = command.ExecuteScalar();
                 cnn.Close();
+                using (var db = new ProjectManagerDBEntities2())
+                {
+                    var task = new Parent_Task { Parent_Task1 = "Review Tasks" };
+                    db.Parent_Task.Add(task);
+                    db.SaveChanges();
+                    
+                    var query = from b in db.Parent_Task
+                                orderby b.Parent_ID
+                                select b;
+
+                    Console.WriteLine("All blogs in the database:");
+                    foreach (var item in query)
+                    {
+                        Console.WriteLine(item.Parent_ID);
+                        Console.WriteLine(item.Parent_Task1);
+                    }
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
-           
-            //using (SqlConnection conn = new SqlConnection())
-            //{
-            //    // Create the connectionString
-            //    // Trusted_Connection is used to denote the connection uses Windows Authentication
-            //    conn.ConnectionString = connetionString;
-            //    conn.Open();
-            //    // Create the command
-            //    SqlCommand command = new SqlCommand("SELECT * FROM Parent_Task", conn);
 
-            //    using (SqlDataReader reader = command.ExecuteReader())
-            //    {
-
-
-            //    }
-            //}
         }
     }
 }

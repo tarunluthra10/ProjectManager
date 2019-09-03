@@ -1,0 +1,127 @@
+<section class="row mt-3">
+    <article class="col-3">
+        <span>Project :</span>
+    </article>
+    <article class="col-3">
+        <input type="text" [disabled]="true" [(ngModel)]="objTaskToPost.ProjectName"/>
+    </article>
+    <article class="col-2">
+        <button class="btn-default" (click)="SearchProject()">Search</button>
+    </article>
+</section>
+<section class="row mt-3">
+    <div class="col-3">
+        Task :
+    </div>
+    <input class="col-6" type="text" [(ngModel)]="objTaskToPost.TaskName" />
+</section>
+<section class="row mt-3">
+    <article class="col-3">
+        <label>
+            <input type="checkbox" [(ngModel)]="objTaskToPost.IsParentTask" /> Parent Task
+        </label>
+    </article>
+</section>
+<section class="row mt-3 slidecontainer">
+    <span class="col-3">Priority : </span>
+    <input class="col-6" type="range" min="0" max="30" class="slider" [(ngModel)]="objTaskToPost.Priority" />
+</section>
+<section class="row mt-3">
+    <article class="col-3">
+        <span>Parent Task :</span>
+    </article>
+    <article class="col-3">
+        <input type="text" [disabled]="true" [(ngModel)]="objTaskToPost.ParentTaskName"/>
+    </article>
+    <article class="col-2">
+        <button class="btn-default" (click)="SearchParentTask()">Search</button>
+    </article>
+</section>
+<section class="row mt-3">
+    <article class="col-3">
+        <span>Start Date : </span>
+    </article>
+    <article class="col-3">
+        <input type="date" name="startDate" [(ngModel)]="objTaskToPost.StartDate" />
+    </article>
+    <article class="col-3">
+        <span>End Date : </span>
+    </article>
+    <article class="col-3">
+        <input type="date" name="endDate" [(ngModel)]="objTaskToPost.EndDate" />
+    </article>
+</section>
+<section class="row mt-3">
+    <article class="col-3">
+        <span>User :</span>
+    </article>
+    <article class="col-3">
+        <input type="text" [disabled]="true" [(ngModel)]="objTaskToPost.ManagerName" />
+    </article>
+    <article class="col-2">
+        <button class="btn-default" (click)="SearchUser()">Search</button>
+    </article>
+</section>
+<section class="row mt-3">
+    <article class="col-3 offset-6">
+        <button *ngIf="isAdd" class="btn-primary" (click)="AddProject(objTaskToPost)">Add Task</button>
+        <button *ngIf="!isAdd" class="btn-primary" (click)="UpdateProject(objTaskToPost)">Update</button>
+    </article>
+    <article class="col-3">
+        <button class="btn-default" (click)="ResetProject(objTaskToPost)">Reset</button>
+    </article>
+</section>
+<ng-template #searchProjectModal let-c="close" let-d="dismiss">
+    <app-modal [title]="'Search Project'" [c]="c" [d]="d">
+        <section class="row mt-3">
+            <input class="col-9 offset-2" type="text" placeholder="Search..." [(ngModel)]="searchProjectName" />
+        </section>
+        <section class="row mt-3">
+            <section class="col-12 list-group">
+                <article class="list-group-item"
+                    *ngFor="let item of listOfProjects | search: {ProjectName: searchProjectName}">
+                    <div class="row">
+                        <span class="col-9">{{item.ProjectName}}</span>
+                        <input class="col-3" type="button" value="Select" (click)="SelectedProjectClick(item)" />
+                    </div>
+                </article>
+            </section>
+        </section>
+    </app-modal>
+</ng-template>
+<ng-template #searchParentTaskModal let-c="close" let-d="dismiss">
+    <app-modal [title]="'Search Parent Task'" [c]="c" [d]="d">
+        <section class="row mt-3">
+            <input class="col-9 offset-2" type="text" placeholder="Search..." [(ngModel)]="searchParentTaskName" />
+        </section>
+        <section class="row mt-3">
+            <section class="col-12 list-group">
+                <article class="list-group-item"
+                    *ngFor="let item of listOfParentTasks | search: {ProjectName: searchParentTaskName}">
+                    <div class="row">
+                        <span class="col-9">{{item.TaskName}}</span>
+                        <input class="col-3" type="button" value="Select" (click)="SelectedParentTaskClick(item)" />
+                    </div>
+                </article>
+            </section>
+        </section>
+    </app-modal>
+</ng-template>
+<ng-template #searchUserModal let-c="close" let-d="dismiss">
+    <app-modal [title]="'Search User'" [c]="c" [d]="d">
+        <section class="row mt-3">
+            <input class="col-9 offset-2" type="text" placeholder="Search..." [(ngModel)]="searchUserName" />
+        </section>
+        <section class="row mt-3">
+            <section class="col-12 list-group">
+                <article class="list-group-item"
+                    *ngFor="let item of listOfUsers | search: {FirstName: searchUserName}">
+                    <div class="row">
+                        <span class="col-9">{{item.FirstName}} {{item.LastName}}</span>
+                        <input class="col-3" type="button" value="Select" (click)="SelectedUserClick(item)" />
+                    </div>
+                </article>
+            </section>
+        </section>
+    </app-modal>
+</ng-template>

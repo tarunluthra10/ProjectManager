@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import {ApiService} from './services/api.service';
+import { ActivatedRoute, Router, NavigationEnd  } from '@angular/router';
+import {filter} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +10,24 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'project-manager';
+  public selectedRoute:string = '';
+
+constructor( private router: Router,
+  private route: ActivatedRoute,refApiService: ApiService) {
+    this.router.events.pipe(
+      filter((event: any) => event instanceof NavigationEnd))
+      .subscribe(event => {
+        this.selectedRoute = event.url != '/' ? event.url : '/addproject';
+      });
+
+// refApiService.GetProduct().subscribe((result) => {
+//   alert('In Subscribe');
+//   console.log(result);
+// }, (err) => {
+//   alert('In Error');
+//   console.log(err);
+// });
+}
+
+
 }

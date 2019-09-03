@@ -1,0 +1,64 @@
+<section class="row mt-3">
+    <article class="col-1">
+        <span>Project : </span>
+    </article>
+    <article class="col-2">
+        <input type="text" [disabled]="true" [(ngModel)]="objTaskToPost.ProjectName" />
+        <button class="btn-default" (click)="SearchProject()">Search</button>
+    </article>
+    <article class="col-1">
+        <span>Sort Task By</span>
+    </article>
+    <article class="col-2">
+        <input type="button" class="btn-primary" value="Start Date" (click)="sortByColumn='StartDate';" />
+    </article>
+    <article class="col-2">
+        <input type="button" class="btn-primary" value="End Date" (click)="sortByColumn='EndDate';" />
+    </article>
+    <article class="col-2">
+        <input type="button" class="btn-primary" value="Priority" (click)="sortByColumn='Priority';" />
+    </article>
+    <article class="col-2">
+        <input type="button" class="btn-primary" value="Completed" (click)="sortByColumn='Completed';" />
+    </article>
+</section>
+<section class="row mt-3">
+    <section class="col-12 list-group">
+        <article class="list-group-item"
+            *ngFor="let item of listOfTasks | search: {TaskName: searchText} | sortBy: sortByColumn">
+            <div class="row">
+                <span class="col-2"><b>Task</b></span>
+                <span class="col-2"><b>Parent</b></span>
+                <span class="col-2"><b>Priority</b></span>
+                <span class="col-2"><b>Start</b></span>
+                <span class="col-2"><b>End</b></span>
+            </div>
+            <div class="row">
+                <span class="col-2">{{item.TaskName}}</span>
+                <span class="col-2">{{item.ParentTaskName}}</span>
+                <span class="col-2">{{item.Priority}}</span>
+                <span class="col-2">{{item.StartDate}}</span>
+                <span class="col-2">{{item.EndDate}}</span>
+                <input class="col-1" type="button" value="Edit" class="mr-1" (click)="EditProject(item)" />
+                <input class="col-1" type="button" value="End Task" (click)="DeleteProject(item)" />
+            </div>
+        </article>
+    </section>
+</section>
+<ng-template #searchProjectModal let-c="close" let-d="dismiss">
+        <app-modal [title]="'Search Project'" [c]="c" [d]="d">
+            <section class="row mt-3">
+                <input class="col-9 offset-2" type="text" placeholder="Search..." [(ngModel)]="searchProjectName" />
+            </section>
+            <section class="row mt-3">
+                <section class="col-12 list-group">
+                    <article class="list-group-item" *ngFor="let item of listOfProjects | search: {ProjectName: searchProjectName}">
+                        <div class="row">
+                            <span class="col-9">{{item.ProjectName}}</span>
+                            <input class="col-3" type="button" value="Select" (click)="SelectedProjectClick(item)" />
+                        </div>
+                    </article>
+                </section>
+            </section>
+        </app-modal>
+    </ng-template>

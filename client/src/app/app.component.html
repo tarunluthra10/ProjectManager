@@ -1,1 +1,27 @@
-<h1>Project Manager</h1>
+<div class="container-fluid">
+    <header class="row">
+        <section class="col">
+            <h1>Project Manager</h1>
+        </section>
+  </header>
+<nav>
+    <ul class="nav nav-tabs nav-fill">
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{'active' : (selectedRoute == '/addproject')}" routerLink="/addproject">Add Project</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{'active' : (selectedRoute == '/addtask')}"  routerLink="/addtask">Add Task</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{'active' : (selectedRoute == '/adduser')}"  routerLink="/adduser">Add User</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{'active' : (selectedRoute == '/viewtask')}"  routerLink="/viewtask">View Task</a>
+        </li>
+      </ul>
+</nav>
+<body class="bodyGap">
+    <router-outlet></router-outlet>
+</body>
+
+</div>

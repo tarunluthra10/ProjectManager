@@ -1,0 +1,112 @@
+<section class="row mt-3">
+    <div class="col-3">
+        Project
+    </div>
+    <input class="col-6" type="text" [(ngModel)]="objProjectToPost.ProjectName" />
+</section>
+<section class="row mt-3">
+    <article class="col-3">
+        <label>
+            <input type="checkbox" [(ngModel)]="setDate">Set Start and End Date
+        </label>
+    </article>
+    <article class="col-3">
+        <input type="date" name="startDate" [disabled]="!setDate" [(ngModel)]="objProjectToPost.StartDate">
+    </article>
+    <article class="col-3">
+        <input type="date" name="endDate" [disabled]="!setDate" [(ngModel)]="objProjectToPost.EndDate">
+    </article>
+</section>
+<section class="row mt-3 slidecontainer">
+    <span class="col-3">Priority : </span>
+    <input class="col-6" type="range" min="0" max="30" class="slider" [(ngModel)]="objProjectToPost.Priority">
+</section>
+<section class="row mt-3">
+    <article class="col-3">
+        <span>Manager</span>
+    </article>
+    <article class="col-3">
+        <input type="text" [disabled]="true" [(ngModel)]="objProjectToPost.ManagerName"/>
+    </article>
+    <article class="col-2">
+        <button class="btn-default" (click)="SearchManager()">Search</button>
+    </article>
+</section>
+<section class="row mt-3">
+    <article class="col-3 offset-6">
+        <button *ngIf="isAdd" class="btn-primary" (click)="AddProject(objProjectToPost)">Add</button>
+        <button *ngIf="!isAdd" class="btn-primary" (click)="UpdateProject(objProjectToPost)">Update</button>
+    </article>
+    <article class="col-3">
+        <button class="btn-default" (click)="ResetProject(objProjectToPost)">Reset</button>
+    </article>
+</section>
+<section class="row mt-3">
+    <hr />
+</section>
+<section class="row mt-3">
+    <input class="col-9 offset-2" type="text" placeholder="Search..." [(ngModel)]="searchText" />
+</section>
+<section class="row mt-3">
+    <article class="col-1">
+        <span>Sort:</span>
+    </article>
+    <article class="col-2">
+        <input type="button" class="btn-primary" value="Start Date" (click)="sortByColumn='StartDate';" />
+    </article>
+    <article class="col-2">
+        <input type="button" class="btn-primary" value="End Date" (click)="sortByColumn='EndDate';" />
+    </article>
+    <article class="col-2">
+        <input type="button" class="btn-primary" value="Priority" (click)="sortByColumn='Priority';" />
+    </article>
+    <article class="col-2">
+        <input type="button" class="btn-primary" value="Completed" (click)="sortByColumn='Completed';" />
+    </article>
+</section>
+<section class="row mt-3">
+    <section class="col-12 list-group">
+        <article class="list-group-item"
+            *ngFor="let item of listOfProjects | search: {ProjectName: searchText} | sortBy: sortByColumn">
+            <div class="row">
+                <span class="col-3">Project</span>
+                <span class="col-3">{{item.ProjectName}}</span>
+                <span class="col-3">Priority</span>
+                <span class="col-3">{{item.Priority}}</span>
+            </div>
+            <div class="row">
+                <span class="col-3">No. of Tasks</span>
+                <span class="col-3">{{item.NumberOfTasks}}</span>
+                <span class="col-3">Completed</span>
+                <span class="col-3">{{item.Completed}}</span>
+            </div>
+            <div class="row">
+                <span class="col-3">Start Date</span>
+                <span class="col-3">{{item.startDate}}</span>
+                <span class="col-3">End Date</span>
+                <span class="col-3">{{item.endDate}}</span>
+            </div>
+            <div class="row">
+                <input class="col-3 offset-6" type="button" value="Edit" class="mr-5" (click)="EditProject(item)" />
+                <input class="col-3" type="button" value="Suspend" class="mr-5" (click)="DeleteProject(item)" />
+            </div>
+        </article>
+    </section>
+</section>
+<ng-template #searchMgrModal let-c="close" let-d="dismiss">
+    <app-modal [title]="'Search Manager'" [c]="c" [d]="d">
+        <section class="row mt-3">
+            <input class="col-9 offset-2" type="text" placeholder="Search..." [(ngModel)]="searchMgrText" />
+        </section>
+        <section class="row mt-3">
+            <section class="col-12 list-group">
+                <article class="list-group-item" *ngFor="let item of listOfManagers | search: {FirstName: searchMgrText}">
+                    <div class="row">
+                        <span class="col-9">{{item.FirstName}}{{item.LastName}}</span>
+                        <input class="col-3" type="button" value="Select" (click)="SelectedManagerClick(item)" />
+                    </div>
+                </article>
+            </section>
+        </section>
+    </app-modal>
+</ng-template>
