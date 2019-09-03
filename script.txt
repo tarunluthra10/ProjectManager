@@ -1,0 +1,29 @@
+create table Parent_Task (
+Parent_ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+Parent_Task varchar(200));
+
+create table Project(
+Project_ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+Project varchar(200),
+Start_Date Date,
+End_Date Date,
+Priority int);
+
+create table Task(
+Task_ID int NOT NULL  IDENTITY(1,1) PRIMARY KEY,
+Parent_ID int FOREIGN KEY REFERENCES Parent_Task(Parent_ID),
+Project_ID int FOREIGN KEY REFERENCES Project(Project_ID),
+Task varchar(200),
+Start_Date Date,
+End_Date Date,
+Priority int,
+Status varchar(3));
+
+create table Users(
+User_ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+First_Name varchar(200),
+Last_Name varchar(200),
+Employee_ID int,
+Project_ID int FOREIGN KEY REFERENCES Project(Project_ID),
+Task_ID int FOREIGN KEY REFERENCES Task(Task_ID))
+
