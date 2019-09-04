@@ -4,6 +4,7 @@ import { Project } from '../models/project.model';
 import { User } from '../models/user.model';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from '../modal/modal.component';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-add-task',
@@ -21,46 +22,85 @@ export class AddTaskComponent implements OnInit {
   @ViewChild('searchParentTaskModal', { static: false }) searchParentTaskModal: TemplateRef<any>;
   @ViewChild('searchUserModal', { static: false }) searchUserModal: TemplateRef<any>;
 
-  constructor(private modalService: NgbModal) { }
+  constructor(private modalService: NgbModal,private refApiService: ApiService) { }
 
   ngOnInit() {
+    this.GetAllProject();
+    this.GetAllUserData();
+    this.GetAllParentTasks();
+  }
 
-    this.listOfParentTasks = new Array<Task>();
+  private ValidateTask(objTask: Task): Boolean {
+    let isValid = false;
+    isValid = objTask.TaskName.trim() !== '' && objTask.Priority.toString().trim() !== '' && objTask.ProjectName.toString().trim() !== '';
+    return isValid;
+
+  }
+
+  GetAllProject() {
     this.listOfProjects = new Array<Project>();
+    this.refApiService.GetAllProjects().subscribe(res => {
+      console.log(res);
+      for (let oneProject of res) {
+        let abc = new Project();
+        abc.ProjectId = oneProject.ProjectId;
+        abc.ProjectName = oneProject.ProjectName;
+        abc.Priority = oneProject.Priority;
+        abc.Completed = oneProject.Completed;
+        abc.StartDate = oneProject.StartDate;
+        abc.EndDate = oneProject.EndDate;
+        abc.NumberOfTasks = oneProject.NumberOfTasks;
+        this.listOfProjects.push(abc);
+      }
+    });
+  }
+
+  GetAllUserData() {
     this.listOfUsers = new Array<User>();
+    this.refApiService.GetAllUsers().subscribe(res => {
+      for (let oneUser of res) {
+        var objUserItem = new User();
+        objUserItem.UserId = oneUser.UserId;
+        objUserItem.EmployeeId = oneUser.EmployeeId;
+        objUserItem.FirstName = oneUser.FirstName;
+        objUserItem.LastName = oneUser.LastName;
+        this.listOfUsers.push(objUserItem);
+      }
+    });
+  }
 
-    for(let i=0; i<=10; i++)
-    {
-      let objTask = new Task();
-      let objUser = new User();
-      let objProject = new Project();
+  GetAllParentTasks() {
+    this.listOfParentTasks = new Array<Task>();
+    this.refApiService.GetAllUsers().subscribe(res => {
+      for (let oneTask of res) {
+        var objTask = new Task();
+        objTask.ParentTaskId = oneTask.ParentTaskId;
+        objTask.ParentTaskName = oneTask.ParentTaskName;
+        objTask.TaskId = oneTask.TaskId;
+        objTask.TaskName = oneTask.TaskName;
+        this.listOfParentTasks.push(oneTask);
+      }
+    });
+  }
 
-      objTask.TaskId = i;
-      objTask.TaskName = "Task Name"+i;
-      objUser.UserId = i;
-      objUser.FirstName = "First Name"+i;
-      objUser.LastName = "Last Name"+i;
-      objProject.ProjectId = i;
-      objProject.ProjectName = "Project"+i;
 
-      this.listOfParentTasks.push(objTask);
-      this.listOfProjects.push(objProject);
-      this.listOfUsers.push(objUser);
-
+  AddTask(objTask: Task): void {
+    console.log(objTask);
+    if (this.ValidateTask(objTask)) {
+      console.log('After Validation');
+      this.refApiService.AddNewTask(objTask).subscribe(res => { if(res) {this.ResetTask();} });
     }
   }
 
-
-  AddProject(objTask: Task): void {
+  UpdateTask(objTask: Task): void {
     console.log(objTask);
-  }
-
-  UpdateProject(objTask: Task): void {
-    console.log(objTask);
+    if (this.ValidateTask(objTask)) {
+      this.refApiService.UpdateTask(objTask).subscribe(res => { if(res) {this.ResetTask();} });
+    }
     this.isAdd = true;
   }
 
-  ResetProject(objTask: Task): void {
+  ResetTask(): void {
     this.objTaskToPost = new Task();
     this.isAdd = true;
   }

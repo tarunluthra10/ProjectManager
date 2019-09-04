@@ -3,6 +3,7 @@ import { Task } from '../models/task.model';
 import { Project } from '../models/project.model';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from '../modal/modal.component';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-view-task',
@@ -11,67 +12,82 @@ import { ModalComponent } from '../modal/modal.component';
 })
 export class ViewTaskComponent implements OnInit {
 
-  public objTaskToPost:Task = new Task;
+  public objTaskToPost: Task = new Task;
   public sortByColumn: string = '';
   public listOfTasks: Array<Task>;
   public listOfProjects: Array<Project>;
+  private selectedProjectId: number;
   @ViewChild('searchProjectModal', { static: false }) searchProjectModal: TemplateRef<any>;
 
-  constructor(private modalService: NgbModal) { }
+  constructor(private modalService: NgbModal, private refApiService: ApiService) { }
 
   ngOnInit() {
-    this.listOfTasks = new Array<Task>();
-    for(var i=1; i <= 10; i++)
-    {
-      var abc = new Task();
-      abc.ProjectId = i;
-      abc.ProjectName = "Project"+i;
-      abc.Priority = 10;
-      abc.Completed = "2";
-      abc.StartDate = new Date(2019, 9, 1);
-      abc.EndDate = new Date(2019, 9, 1);
-      abc.TaskId = i;
-      abc.TaskName = "Task Name"+i;
-      abc.ParentTaskId = i*i + 10;
-      abc.ParentTaskName = "Parent Task "+i;
-      this.listOfTasks.push(abc);
-
-    }
-
-    this.listOfProjects = new Array<Project>();
-
-    for(var i=1; i <= 10; i++)
-    {
-      var objProject = new Project();
-      objProject.ProjectId = i;
-      objProject.ProjectName = "Project Name"+i;
-      this.listOfProjects.push(objProject);
-    }
+    this.GetAllProject();
   }
 
+  GetAllProject() {
+    this.listOfProjects = new Array<Project>();
+    this.refApiService.GetAllProjects().subscribe(res => {
+      console.log(res);
+      for (let oneProject of res) {
+        let abc = new Project();
+        abc.ProjectId = oneProject.ProjectId;
+        abc.ProjectName = oneProject.ProjectName;
+        abc.Priority = oneProject.Priority;
+        abc.Completed = oneProject.Completed;
+        abc.StartDate = oneProject.StartDate;
+        abc.EndDate = oneProject.EndDate;
+        abc.NumberOfTasks = oneProject.NumberOfTasks;
+        this.listOfProjects.push(abc);
+      }
+    });
+  }
 
-  EditProject(objTask:Task) : void
-  {
+  GetAllTaskForProject(objProjectId: number) {
+    this.listOfTasks = new Array<Task>();
+    this.selectedProjectId = objProjectId;
+    this.refApiService.GetAllTaskForProject(objProjectId).subscribe(res => {
+      console.log(res);
+      for (let oneTask of res) {
+        var abc = new Task();
+        abc.ProjectId = oneTask.ProjectId;
+        abc.ProjectName = oneTask.ProjectName;
+        abc.Priority = oneTask.Priority;
+        abc.Completed = oneTask.Completed;
+        abc.StartDate = oneTask.StartDate;
+        abc.EndDate = oneTask.EndDate;
+        abc.TaskId = oneTask.TaskId;
+        abc.TaskName = oneTask.TaskName;
+        abc.ParentTaskId = oneTask.ParentTaskId;
+        abc.ParentTaskName = oneTask.ParentTaskName;
+        this.listOfTasks.push(abc);
+      }
+    });
+
+  }
+
+  EditProject(objTask: Task): void {
     this.objTaskToPost = objTask;
   }
 
-  DeleteProject(objUser:Task) : void
-  {
-    // call service to delete user
-
-    // Load all users
+  DeleteTask(objTask: Task): void {
+    this.refApiService.UpdateTask(objTask).subscribe(res => 
+      { 
+        if(res) {
+          this.GetAllTaskForProject(this.selectedProjectId);
+        } 
+      });
   }
 
   SearchProject() {
     const modalRef = this.modalService.open(this.searchProjectModal);
-    console.log(modalRef);
   }
 
   SelectedProjectClick(item: Project) {
     this.objTaskToPost.ProjectId = item.ProjectId;
     this.objTaskToPost.ProjectName = item.ProjectName;
-
-    // Call service to refresh data
+    this.GetAllTaskForProject(item.ProjectId);
+    
   }
 
 }

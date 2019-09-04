@@ -3,6 +3,7 @@ import { Project } from '../models/project.model';
 import { User } from '../models/user.model';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from '../modal/modal.component';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-add-project',
@@ -21,43 +22,71 @@ export class AddProjectComponent implements OnInit {
 
   @ViewChild('searchMgrModal', { static: false }) searchMgrModal: TemplateRef<any>;
 
-  constructor(private modalService: NgbModal) { }
+  constructor(private modalService: NgbModal, private refApiService: ApiService) { }
 
   ngOnInit() {
-    this.listOfProjects = new Array<Project>();
-    for (var i = 1; i <= 10; i++) {
-      var abc = new Project();
-      abc.ProjectId = i;
-      abc.ProjectName = "Project" + i;
-      abc.Priority = 10;
-      abc.Completed = "2";
-      abc.StartDate = new Date(2019, 9, 1);
-      abc.EndDate = new Date(2019, 9, 1);
-      abc.NumberOfTasks = i;
-      this.listOfProjects.push(abc);
+    this.GetAllProject();
+    this.GetAllManagerData();
+  }
 
-    }
-
-    this.listOfManagers = new Array<User>();
-    for (var i = 1; i <= 10; i++) {
-      var objUser = new User();
-      objUser.EmployeeId = i;
-      objUser.UserId = i;
-      objUser.FirstName = "FirstName" + i;
-      objUser.LastName = "LastName" + i;
-      this.listOfManagers.push(objUser);
-
-    }
+  private ValidateProject(objProject: Project): Boolean {
+    let isValid = false;
+    isValid = objProject.ProjectName.trim() !== '' && objProject.Priority.toString().trim() !== '' && objProject.ManagerName.toString().trim() !== '';
+    return isValid;
 
   }
 
+  GetAllProject() {
+    this.listOfProjects = new Array<Project>();
+    this.refApiService.GetAllProjects().subscribe(res => {
+      console.log(res);
+      for (let oneProject of res) {
+        let abc = new Project();
+        abc.ProjectId = oneProject.ProjectId;
+        abc.ProjectName = oneProject.ProjectName;
+        abc.Priority = oneProject.Priority;
+        abc.Completed = oneProject.Completed;
+        abc.StartDate = oneProject.StartDate;
+        abc.EndDate = oneProject.EndDate;
+        abc.NumberOfTasks = oneProject.NumberOfTasks;
+        this.listOfProjects.push(abc);
+      }
+    });
+  }
+
+  GetAllManagerData() {
+    this.listOfManagers = new Array<User>();
+    this.refApiService.GetAllUsers().subscribe(res => {
+      for (let oneUser of res) {
+        var objUserItem = new User();
+        objUserItem.UserId = oneUser.UserId;
+        objUserItem.EmployeeId = oneUser.EmployeeId;
+        objUserItem.FirstName = oneUser.FirstName;
+        objUserItem.LastName = oneUser.LastName;
+        this.listOfManagers.push(objUserItem);
+      }
+    });
+  }
+
+
   AddProject(objProject: Project): void {
     console.log(objProject);
+    if (this.ValidateProject(objProject)) {
+      this.refApiService.AddNewProject(objProject).subscribe(res => { this.GetAllProject(); });
+    }
   }
 
   UpdateProject(objProject: Project): void {
     console.log(objProject);
-    this.isAdd = true;
+    if (this.ValidateProject(objProject)) {
+      this.refApiService.UpdateProject(objProject).subscribe(res => { 
+        if(res)
+        {
+          this.GetAllProject(); this.isAdd = true; 
+        }
+      });
+    }
+    
   }
 
   ResetProject(objProject: Project): void {
@@ -70,10 +99,16 @@ export class AddProjectComponent implements OnInit {
     this.isAdd = false;
   }
 
-  DeleteProject(objUser: Project): void {
-    // call service to delete user
-
-    // Load all users
+  DeleteProject(objProject: Project): void {
+    if (this.ValidateProject(objProject)) {
+      this.refApiService.RemoveProject(objProject).subscribe(res => { 
+        if(res)
+        {
+          this.GetAllProject(); 
+          this.isAdd = true; 
+        }
+      });
+    }
   }
 
   SearchManager() {

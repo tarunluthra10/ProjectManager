@@ -5,32 +5,39 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using ProjectManager.Web.Models;
+using ProjectManager.Web.BC;
 
 namespace ProjectManager.Web.Controllers
 {
     public class ProjectController : ApiController
     {
+        private IProjectBC refProjectBc;
+        public ProjectController()
+        {
+            refProjectBc = new ProjectBC();
+        }
+
         // GET api/<controller>
         public List<ProjectItem> GetAllProjects()
         {
-            return new List<ProjectItem>();
+            return refProjectBc.GetAllProjects();
         }
 
-        public bool AddNewTask([FromBody]ProjectItem objProject)
+        public bool AddNewProject([FromBody]ProjectItem objProject)
         {
-            return true;
+            return refProjectBc.AddNewProject(objProject);
         }
 
         // PUT api/<controller>/5
-        public bool UpdateTask([FromBody]ProjectItem objProject)
+        public bool UpdateProject([FromBody]ProjectItem objProject)
         {
-            return true;
+            return refProjectBc.UpdateProject(objProject);
         }
 
         // DELETE api/<controller>/5
-        public void RemoveTask(ProjectItem objProject)
+        public bool RemoveProject(ProjectItem objProject)
         {
-
+            return refProjectBc.RemoveProject(objProject);
         }
     }
 }

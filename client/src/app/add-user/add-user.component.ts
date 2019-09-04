@@ -1,4 +1,4 @@
-import { Component, OnInit,ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { User } from '../models/user.model';
 import { ApiService } from '../services/api.service';
 
@@ -19,62 +19,69 @@ export class AddUserComponent implements OnInit {
 
   ngOnInit() {
     this.GetAllUsersData();
-    // for(var i=1; i <= 10; i++)
-    // {
-    //   var abc = new User();
-    //   abc.UserId = i;
-    //   abc.EmployeeId = i;
-    //   abc.FirstName = "FName"+i;
-    //   abc.LastName = "LName"+i;
-    //   this.listUsers.push(abc);
-
-    // }
-
-
   }
 
   GetAllUsersData() {
     this.listUsers = new Array<User>();
     this.refApiService.GetAllUsers().subscribe(res => {
-      console.log(res);
       for (let oneUser of res) {
         var objUserItem = new User();
         objUserItem.UserId = oneUser.UserId;
         objUserItem.EmployeeId = oneUser.EmployeeId;
         objUserItem.FirstName = oneUser.FirstName;
         objUserItem.LastName = oneUser.LastName;
-        console.log('mapping list of users');
         this.listUsers.push(objUserItem);
-     }
+      }
     });
   }
 
   AddUser(objUser: User): void {
-    console.log(objUser);
-    this.refApiService.AddNewUser(objUser).subscribe(res => { console.log(res); this.GetAllUsersData(); });
+    if (this.ValidateUser(objUser)) {
+      this.refApiService.AddNewUser(objUser).subscribe(res => { this.GetAllUsersData(); });
+    }
 
   }
 
   UpdateUser(objUser: User): void {
-    console.log(objUser);
-    this.isAdd = true;
+    if (this.ValidateUser(objUser)) {
+      this.refApiService.UpdateUser(objUser).subscribe(res => {
+        if (res) {
+          this.isAdd = true;
+          this.GetAllUsersData();
+          this.ResetUser();
+        }
+      });
+    }
+
   }
 
-  ResetUser(objUser: User): void {
+  private ValidateUser(objUser: User): Boolean {
+    let isValid = false;
+    isValid = objUser.FirstName.trim() !== '' && objUser.LastName.trim() !== '' && objUser.EmployeeId.toString().trim() !== '';
+    return isValid;
+
+  }
+
+  DeleteUser(objUser: User): void {
+    this.refApiService.RemoveUser(objUser).subscribe(res => {
+      console.log(res);
+      this.GetAllUsersData();
+    });
+  }
+
+  ResetUser(): void {
     this.objUserToPost = new User();
     this.isAdd = true;
   }
 
-  EditUser(objUser: User): void {
-    this.objUserToPost = objUser;
+  EditUser(objUser: User) {
     this.isAdd = false;
+    this.objUserToPost = new User();
+    this.objUserToPost.UserId = objUser.UserId;
+    this.objUserToPost.EmployeeId = objUser.EmployeeId;
+    this.objUserToPost.FirstName = objUser.FirstName;
+    this.objUserToPost.LastName = objUser.LastName;
   }
 
-  DeleteUser(objUser: User): void {
-    // call service to delete user
-
-    // Load all users
-  }
-
-
+  
 }

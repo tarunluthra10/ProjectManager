@@ -26,19 +26,19 @@ namespace ProjectManager.Web.Controllers
 
         public bool AddNewUser([FromBody]UserItem objUser)
         {
-            return userbc.AddNewTask(objUser);
+            return userbc.AddNewUser(objUser);
         }
 
         // PUT api/<controller>/5
-        public bool UpdateTask([FromBody]UserItem objUser)
+        public bool UpdateUser([FromBody]UserItem objUser)
         {
-            return true;
+            return userbc.UpdateUser(objUser);
         }
 
         // DELETE api/<controller>/5
-        public void RemoveTask(UserItem objUser)
+        public bool RemoveUser(UserItem objUser)
         {
-
+            return userbc.RemoveUser(objUser);
         }
     }
 }

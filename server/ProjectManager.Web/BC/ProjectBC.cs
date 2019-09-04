@@ -6,7 +6,7 @@ using System.Web;
 
 namespace ProjectManager.Web.BC
 {
-    public class ProjectBC
+    public class ProjectBC : IProjectBC
     {
         ProjectManagerDBEntities2 entity = null;
         public ProjectBC()
@@ -14,7 +14,6 @@ namespace ProjectManager.Web.BC
             entity = new ProjectManagerDBEntities2();
         }
 
-        // GET api/<controller>
         public List<ProjectItem> GetAllProjects()
         {
             List<ProjectItem> projectItem = new List<ProjectItem>();
@@ -26,11 +25,11 @@ namespace ProjectManager.Web.BC
                 projectItem = projectList.Select(i =>
                    new ProjectItem
                    {
-                       //  Completed=i, ?????????????????????????????????????????check all task status
+                       Completed = IsTaskCompleted(i.Project_ID),
                        EndDate = i.End_Date ?? DateTime.Now,
                        ManagerId = GetManagerDetails(i.Project_ID).User_ID,
                        ManagerName = String.Format(" ", GetManagerDetails(i.Project_ID).First_Name, GetManagerDetails(i.Project_ID).Last_Name),
-                       //Priority=i.Priority, change data type in db
+                       Priority = (int)i.Priority,
                        ProjectId = i.Project_ID,
                        ProjectName = i.Project1,
                        StartDate = i.Start_Date ?? DateTime.Now,
@@ -39,11 +38,17 @@ namespace ProjectManager.Web.BC
             }
             catch (Exception ex)
             {
-
+                throw ex;
             }
             return projectItem;
         }
 
+        private string IsTaskCompleted(int ProjectId)
+        {
+            var projectContext = entity.Set<Project>();
+            List<Task> task = entity.Set<Task>().Where(p => p.Parent_ID == ProjectId).Where(x => x.Status.Equals("false")).ToList();
+            return task.Any() ? "false" : "true";
+        }
         private List<Task> GetTasks(int ProjectId)
         {
             var projectContext = entity.Set<Project>();
@@ -69,11 +74,11 @@ namespace ProjectManager.Web.BC
             }
             catch (Exception ex)
             {
-
+                throw ex;
             }
             return projectObj;
         }
-        public bool AddNewTask(ProjectItem objProject)
+        public bool AddNewProject(ProjectItem objProject)
         {
             try
             {
@@ -83,24 +88,22 @@ namespace ProjectManager.Web.BC
                     Start_Date = objProject.StartDate,
                     End_Date = objProject.EndDate,
                     Project1 = objProject.ProjectName,
-                    // Priority= objProject.Priority,
+                    Priority = objProject.Priority,
                 });
                 entity.SaveChanges();
                 Project projectObj = GetProjectDetails(objProject.ProjectName);
                 var user = entity.Set<User>().FirstOrDefault(p => p.User_ID == objProject.ManagerId);
                 user.Project_ID = projectObj.Project_ID;
-                entity.SaveChanges();
             }
             catch (Exception ex)
             {
-                return false;
+                throw ex;
             }
 
-            return true;
+            return entity.SaveChanges() ==1;
         }
 
-        // PUT api/<controller>/5
-        public bool UpdateTask(ProjectItem objProject)
+        public bool UpdateProject(ProjectItem objProject)
         {
             try
             {
@@ -110,23 +113,20 @@ namespace ProjectManager.Web.BC
                 std.Start_Date = objProject.StartDate;
                 std.End_Date = objProject.EndDate;
                 std.Project1 = objProject.ProjectName;
-                // Priority= objProject.Priority,
                 var user = entity.Set<User>().FirstOrDefault(p => p.Project_ID == objProject.ProjectId);
                 user.Project_ID = user.User_ID != objProject.ManagerId ? 0 : objProject.ProjectId;
                 var updatedManager = entity.Set<User>().FirstOrDefault(p => p.User_ID == objProject.ManagerId);
                 user.Project_ID = objProject.ProjectId;
-                entity.SaveChanges();
             }
             catch (Exception ex)
             {
-                return false;
+                throw ex;
             }
 
-            return true;
+            return entity.SaveChanges() == 1;
         }
 
-        // DELETE api/<controller>/5
-        public void RemoveTask(ProjectItem objProject)
+        public bool RemoveProject(ProjectItem objProject)
         {
             try
             {
@@ -139,9 +139,9 @@ namespace ProjectManager.Web.BC
             }
             catch (Exception ex)
             {
-
+                throw ex;
             }
-            entity.SaveChanges();
+            return entity.SaveChanges() == 1;
         }
     }
 }

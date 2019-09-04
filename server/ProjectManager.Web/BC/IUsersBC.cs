@@ -1,0 +1,20 @@
+﻿using ProjectManager.Web.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ProjectManager.Web.BC
+{
+    public interface IUsersBC
+    {
+        List<UserItem> GetAllUsers();
+
+        bool AddNewUser(UserItem objUser);
+
+        bool UpdateUser(UserItem objUser);
+
+        bool RemoveUser(UserItem objUser);
+
+    }
+}

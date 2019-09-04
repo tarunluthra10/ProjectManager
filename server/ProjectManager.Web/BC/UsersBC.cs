@@ -6,7 +6,7 @@ using System.Web;
 
 namespace ProjectManager.Web.BC
 {
-    public class UsersBC
+    public class UsersBC : IUsersBC
     {
         ProjectManagerDBEntities2 entity = null;
         public UsersBC()
@@ -33,12 +33,12 @@ namespace ProjectManager.Web.BC
             }
             catch (Exception ex)
             {
-
+                throw ex;
             }
             return userItem;
         }
 
-        public bool AddNewTask(UserItem objUser)
+        public bool AddNewUser(UserItem objUser)
         {
             try
             {
@@ -50,18 +50,17 @@ namespace ProjectManager.Web.BC
                     Last_Name = objUser.LastName,
                 });
 
-                entity.SaveChanges();
             }
             catch (Exception ex)
             {
                 return false;
             }
 
-            return true;
+            return entity.SaveChanges() == 1;
         }
 
 
-        public bool UpdateTask(UserItem objUser)
+        public bool UpdateUser(UserItem objUser)
         {
             try
             {
@@ -71,31 +70,30 @@ namespace ProjectManager.Web.BC
                 std.First_Name = objUser.FirstName;
                 std.Last_Name = objUser.LastName;
 
-                entity.SaveChanges();
             }
             catch (Exception ex)
             {
                 return false;
             }
 
-            return true;
+            return entity.SaveChanges() == 1;
         }
 
 
-        public void RemoveTask(UserItem objUser)
+        public bool RemoveUser(UserItem objUser)
         {
             try
             {
                 var userContext = entity.Set<User>();
-               
+
                 var std = userContext.Where(x => x.User_ID == objUser.UserId).First<User>();
                 userContext.Remove(std);
             }
             catch (Exception ex)
             {
-
+                throw ex;
             }
-            entity.SaveChanges();
+            return entity.SaveChanges() == 1;
         }
     }
 }

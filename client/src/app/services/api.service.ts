@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
-import { WebApiConstants,ApiMockUrl } from '../web-api-constants';
+import { WebApiConstants, ApiMockUrl } from '../web-api-constants';
 import { environment } from '../../environments/environment';
 import { User } from '../models/user.model';
+import { Project } from '../models/project.model';
+import { Task } from '../models/task.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,38 +15,91 @@ export class ApiService {
 
   private endpoint = environment.baseApiUrl;
   private isMock = environment.isMock;
- private httpOptions = {
-   headers: new HttpHeaders({
-     'Content-Type':  'application/json'
-   })
- };
+  private httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  };
 
-constructor(private http: HttpClient) { } 
- 
+  constructor(private http: HttpClient) { }
 
-  GetFromApi(url:string, params:any): Observable<any> {
+
+  GetFromApi(url: string, params: any): Observable<any> {
 
     //return this.http.get(this.endpoint + 'ProjectManager/Get').pipe(map(this.extractData));
     return this.http.get(this.endpoint + WebApiConstants.GetAllProjects.api);
   }
 
-  PostToApi(url:string, params:any): Observable<any> {
+  PostToApi(url: string, params: any): Observable<any> {
     return this.http.post<any>(this.endpoint + url, JSON.stringify(params), this.httpOptions);
   }
 
-  GetAllUsers() : Observable<any> {
+  private GetURLToCall(objApiMockUrl: ApiMockUrl): string {
+    return this.isMock ? objApiMockUrl.mock : objApiMockUrl.api;
+  }
+
+
+
+  GetAllUsers(): Observable<any> {
     return this.http.get(this.endpoint + this.GetURLToCall(WebApiConstants.GetAllUsers));
   }
 
-  AddNewUser(objUser: User) : Observable<any>
-  {
+  AddNewUser(objUser: User): Observable<any> {
     return this.http.post<any>(this.endpoint + this.GetURLToCall(WebApiConstants.AddNewUser), JSON.stringify(objUser), this.httpOptions);
   }
 
-  private GetURLToCall(objApiMockUrl: ApiMockUrl): string{
-    return this.isMock ? objApiMockUrl.mock : objApiMockUrl.api;
+  UpdateUser(objUser: User): Observable<any> {
+    return this.http.post<any>(this.endpoint + this.GetURLToCall(WebApiConstants.UpdateUser), JSON.stringify(objUser), this.httpOptions);
   }
-  
+
+  RemoveUser(objUser: User): Observable<any> {
+    return this.http.post<any>(this.endpoint + this.GetURLToCall(WebApiConstants.RemoveUser), JSON.stringify(objUser), this.httpOptions);
+  }
+
+  GetAllProjects(): Observable<any> {
+    return this.http.get(this.endpoint + this.GetURLToCall(WebApiConstants.GetAllProjects));
+  }
+
+  AddNewProject(objUser: Project): Observable<any> {
+    return this.http.post<any>(this.endpoint + this.GetURLToCall(WebApiConstants.AddNewProject), JSON.stringify(objUser), this.httpOptions);
+  }
+
+  UpdateProject(objUser: Project): Observable<any> {
+    return this.http.post<any>(this.endpoint + this.GetURLToCall(WebApiConstants.UpdateProject), JSON.stringify(objUser), this.httpOptions);
+  }
+
+  RemoveProject(objUser: Project): Observable<any> {
+    return this.http.post<any>(this.endpoint + this.GetURLToCall(WebApiConstants.RemoveProject), JSON.stringify(objUser), this.httpOptions);
+  }
+
+  GetAllTasks(): Observable<any> {
+    return this.http.get(this.endpoint + this.GetURLToCall(WebApiConstants.GetAllTasks));
+  }
+
+  GetAllPriorityTasks(): Observable<any> {
+    return this.http.get(this.endpoint + this.GetURLToCall(WebApiConstants.GetAllPriorityTasks));
+  }
+
+  AddNewTask(objUser: Task): Observable<any> {
+    return this.http.post<any>(this.endpoint + this.GetURLToCall(WebApiConstants.AddNewTask), JSON.stringify(objUser), this.httpOptions);
+  }
+
+  UpdateTask(objUser: Task): Observable<any> {
+    return this.http.post<any>(this.endpoint + this.GetURLToCall(WebApiConstants.UpdateTask), JSON.stringify(objUser), this.httpOptions);
+  }
+
+  RemoveTask(objUser: Task): Observable<any> {
+    return this.http.post<any>(this.endpoint + this.GetURLToCall(WebApiConstants.RemoveTask), JSON.stringify(objUser), this.httpOptions);
+  }
+
+  GetAllTaskForProject(projectId: number) : Observable<any> {
+    let headers = new HttpHeaders();
+        headers  = headers.append('Content-Type', 'application/json');
+    let params = new HttpParams();
+       params = params.append('projectId', projectId.toString());
+    return this.http.get(this.endpoint + this.GetURLToCall(WebApiConstants.GetAlltaskForProject), {headers, params});
+  }
+
   // addProduct (product): Observable<any> {
   //   console.log(product);
   //   return this.http.post<any>(this.endpoint + 'products', JSON.stringify(product), this.httpOptions).pipe(
@@ -52,14 +107,14 @@ constructor(private http: HttpClient) { }
   //     catchError(this.handleError<any>('addProduct'))
   //   );
   // }
-  
+
   // updateProduct (id, product): Observable<any> {
   //   return this.http.put(this.endpoint + 'products/' + id, JSON.stringify(product), this.httpOptions).pipe(
   //     tap(_ => console.log(`updated product id=${id}`)),
   //     catchError(this.handleError<any>('updateProduct'))
   //   );
   // }
-  
+
   // deleteProduct (id): Observable<any> {
   //   return this.http.delete<any>(this.endpoint + 'products/' + id, this.httpOptions).pipe(
   //     tap(_ => console.log(`deleted product id=${id}`)),
@@ -69,18 +124,18 @@ constructor(private http: HttpClient) { }
 
   private extractData(res: Response) {
     let body = res;
-    return body || { };
+    return body || {};
   }
 
-  private handleError<T> (operation = 'operation', result?: T) {
+  private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
-  
+
       // TODO: send the error to remote logging infrastructure
       console.error(error); // log to console instead
-  
+
       // TODO: better job of transforming error for user consumption
       console.log(`${operation} failed: ${error.message}`);
-  
+
       // Let the app keep running by returning an empty result.
       return of(result as T);
     };

@@ -64,11 +64,11 @@
 </section>
 <section class="row mt-3">
     <article class="col-3 offset-6">
-        <button *ngIf="isAdd" class="btn-primary" (click)="AddProject(objTaskToPost)">Add Task</button>
-        <button *ngIf="!isAdd" class="btn-primary" (click)="UpdateProject(objTaskToPost)">Update</button>
+        <button *ngIf="isAdd" class="btn-primary" (click)="AddTask(objTaskToPost)">Add Task</button>
+        <button *ngIf="!isAdd" class="btn-primary" (click)="UpdateTask(objTaskToPost)">Update</button>
     </article>
     <article class="col-3">
-        <button class="btn-default" (click)="ResetProject(objTaskToPost)">Reset</button>
+        <button class="btn-default" (click)="ResetTask()">Reset</button>
     </article>
 </section>
 <ng-template #searchProjectModal let-c="close" let-d="dismiss">
