@@ -14,6 +14,11 @@ namespace ProjectManager.Web.BC
             entity = new ProjectManagerDBEntities2();
         }
 
+        public UsersBC(ProjectManagerDBEntities2 instanceProjectManagerDBEntities2)
+        {
+            entity = instanceProjectManagerDBEntities2;
+        }
+
         public List<UserItem> GetAllUsers()
         {
             List<UserItem> userItem = new List<UserItem>();

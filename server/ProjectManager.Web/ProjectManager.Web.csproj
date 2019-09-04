@@ -168,12 +168,9 @@
     <Compile Include="BC\TasksBC.cs" />
     <Compile Include="BC\IUsersBC.cs" />
     <Compile Include="BC\UsersBC.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
-    <Compile Include="Controllers\ProjectManagerController.cs" />
     <Compile Include="Controllers\TasksController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="DatabaseConnectionSetup.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

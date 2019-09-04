@@ -17,6 +17,11 @@ namespace ProjectManager.Web.Controllers
             refProjectBc = new ProjectBC();
         }
 
+        public ProjectController(IProjectBC injectedBC)
+        {
+            refProjectBc = injectedBC;
+        }
+
         // GET api/<controller>
         public List<ProjectItem> GetAllProjects()
         {

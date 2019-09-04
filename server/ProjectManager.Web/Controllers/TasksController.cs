@@ -17,6 +17,11 @@ namespace ProjectManager.Web.Controllers
             refITasksBC = new TasksBC();
         }
 
+        public TasksController(ITasksBC injectedTask)
+        {
+            refITasksBC = injectedTask;
+        }
+
 
         // GET api/<controller>
         public List<TaskItem> GetAllPriorityTasks()

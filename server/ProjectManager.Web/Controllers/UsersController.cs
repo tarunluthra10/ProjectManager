@@ -11,11 +11,15 @@ namespace ProjectManager.Web.Controllers
 {
     public class UsersController : ApiController
     {
-        UsersBC userbc = null;
+        IUsersBC userbc;
         public UsersController()
         {
              userbc = new UsersBC();
+        }
 
+        public UsersController(IUsersBC injectedUserBc)
+        {
+            userbc = injectedUserBc;
         }
 
         // GET api/<controller>

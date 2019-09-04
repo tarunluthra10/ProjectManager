@@ -14,6 +14,12 @@ namespace ProjectManager.Web.BC
             entity = new ProjectManagerDBEntities2();
         }
 
+        public TasksBC(ProjectManagerDBEntities2 instanceProjectManagerDBEntities2)
+        {
+            entity = instanceProjectManagerDBEntities2;
+        }
+
+
         public List<TaskItem> GetAllPriorityTasks()
         {
             List<TaskItem> taskItem = new List<TaskItem>();
