@@ -19,6 +19,8 @@ export class AddProjectComponent implements OnInit {
   public sortByColumn: string = '';
   public listOfManagers: Array<User>;
   public selectedManager: User = new User();
+  public searchMgrText:string= '';
+  public searchText:string= '';
 
   @ViewChild('searchMgrModal', { static: false }) searchMgrModal: TemplateRef<any>;
 

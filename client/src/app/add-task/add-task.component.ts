@@ -18,6 +18,9 @@ export class AddTaskComponent implements OnInit {
   public listOfParentTasks: Array<Task>;
   public listOfProjects: Array<Project>;
   public listOfUsers: Array<User>;
+  public searchProjectName:string= '';
+  public searchParentTaskName:string= '';
+  public searchUserName:string= '';
   @ViewChild('searchProjectModal', { static: false }) searchProjectModal: TemplateRef<any>;
   @ViewChild('searchParentTaskModal', { static: false }) searchParentTaskModal: TemplateRef<any>;
   @ViewChild('searchUserModal', { static: false }) searchUserModal: TemplateRef<any>;

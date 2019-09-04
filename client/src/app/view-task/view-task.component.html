@@ -37,10 +37,10 @@
                 <span class="col-2">{{item.TaskName}}</span>
                 <span class="col-2">{{item.ParentTaskName}}</span>
                 <span class="col-2">{{item.Priority}}</span>
-                <span class="col-2">{{item.StartDate}}</span>
-                <span class="col-2">{{item.EndDate}}</span>
-                <input class="col-1" type="button" value="Edit" class="mr-1" (click)="EditProject(item)" />
-                <input class="col-1" type="button" value="End Task" (click)="DeleteProject(item)" />
+                <span class="col-2">{{item.StartDate |  date: "mm-dd-yyyy"}}</span>
+                <span class="col-2">{{item.EndDate | date: "mm-dd-yyyy"}}</span>
+                <input class="col-1" type="button" value="Edit"  (click)="EditTask(item)" />
+                <input class="col-1" type="button" value="End Task" (click)="DeleteTask(item)" />
             </div>
         </article>
     </section>

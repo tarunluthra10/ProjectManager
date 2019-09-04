@@ -17,6 +17,8 @@ export class ViewTaskComponent implements OnInit {
   public listOfTasks: Array<Task>;
   public listOfProjects: Array<Project>;
   private selectedProjectId: number;
+  public searchProjectName:string= '';
+  public searchText:string= '';
   @ViewChild('searchProjectModal', { static: false }) searchProjectModal: TemplateRef<any>;
 
   constructor(private modalService: NgbModal, private refApiService: ApiService) { }
@@ -66,7 +68,7 @@ export class ViewTaskComponent implements OnInit {
 
   }
 
-  EditProject(objTask: Task): void {
+  EditTask(objTask: Task): void {
     this.objTaskToPost = objTask;
   }
 
