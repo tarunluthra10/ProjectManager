@@ -100,28 +100,6 @@ export class ApiService {
     return this.http.get(this.endpoint + this.GetURLToCall(WebApiConstants.GetAlltaskForProject), {headers, params});
   }
 
-  // addProduct (product): Observable<any> {
-  //   console.log(product);
-  //   return this.http.post<any>(this.endpoint + 'products', JSON.stringify(product), this.httpOptions).pipe(
-  //     tap((product) => console.log(`added product w/ id=${product.id}`)),
-  //     catchError(this.handleError<any>('addProduct'))
-  //   );
-  // }
-
-  // updateProduct (id, product): Observable<any> {
-  //   return this.http.put(this.endpoint + 'products/' + id, JSON.stringify(product), this.httpOptions).pipe(
-  //     tap(_ => console.log(`updated product id=${id}`)),
-  //     catchError(this.handleError<any>('updateProduct'))
-  //   );
-  // }
-
-  // deleteProduct (id): Observable<any> {
-  //   return this.http.delete<any>(this.endpoint + 'products/' + id, this.httpOptions).pipe(
-  //     tap(_ => console.log(`deleted product id=${id}`)),
-  //     catchError(this.handleError<any>('deleteProduct'))
-  //   );
-  // }
-
   private extractData(res: Response) {
     let body = res;
     return body || {};

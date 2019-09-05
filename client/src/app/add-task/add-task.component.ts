@@ -15,9 +15,9 @@ export class AddTaskComponent implements OnInit {
 
   public objTaskToPost: Task = new Task;
   public isAdd: boolean = true;
-  public listOfParentTasks: Array<Task>;
-  public listOfProjects: Array<Project>;
-  public listOfUsers: Array<User>;
+  public listOfParentTasks: Array<Task> = new Array<Task>();
+  public listOfProjects: Array<Project> = new Array<Project>();
+  public listOfUsers: Array<User> =  new Array<User>();
   public searchProjectName:string= '';
   public searchParentTaskName:string= '';
   public searchUserName:string= '';
@@ -88,15 +88,12 @@ export class AddTaskComponent implements OnInit {
 
 
   AddTask(objTask: Task): void {
-    console.log(objTask);
     if (this.ValidateTask(objTask)) {
-      console.log('After Validation');
       this.refApiService.AddNewTask(objTask).subscribe(res => { if(res) {this.ResetTask();} });
     }
   }
 
   UpdateTask(objTask: Task): void {
-    console.log(objTask);
     if (this.ValidateTask(objTask)) {
       this.refApiService.UpdateTask(objTask).subscribe(res => { if(res) {this.ResetTask();} });
     }
@@ -110,7 +107,6 @@ export class AddTaskComponent implements OnInit {
 
   SearchProject() {
     const modalRef = this.modalService.open(this.searchProjectModal);
-    console.log(modalRef);
   }
 
   SelectedProjectClick(item: Project) {
@@ -120,7 +116,6 @@ export class AddTaskComponent implements OnInit {
 
   SearchParentTask() {
     const modalRef = this.modalService.open(this.searchParentTaskModal);
-    console.log(modalRef);
   }
 
   SelectedParentTaskClick(item: Task) {
@@ -130,7 +125,6 @@ export class AddTaskComponent implements OnInit {
 
   SearchUser() {
     const modalRef = this.modalService.open(this.searchUserModal);
-    console.log(modalRef);
   }
 
   SelectedUserClick(item: User) {

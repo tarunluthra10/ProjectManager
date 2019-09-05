@@ -1,16 +1,27 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { NgbModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import {ApiService} from './services/api.service';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule
+        RouterTestingModule,
+        HttpClientModule,
+        FormsModule,
+        NgbModule
       ],
       declarations: [
         AppComponent
       ],
+      providers : [
+        ApiService,
+        NgbActiveModal
+      ]
     }).compileComponents();
   }));
 
@@ -30,6 +41,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('project-manager app is running!');
+    expect(compiled.querySelector('.col h1').textContent).toContain('Project Manager');
   });
 });

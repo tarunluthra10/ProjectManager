@@ -24,9 +24,9 @@ namespace ProjectManager.Web.Controllers
 
 
         // GET api/<controller>
-        public List<TaskItem> GetAllPriorityTasks()
+        public List<TaskItem> GetAllParentTasks()
         {
-            return refITasksBC.GetAllPriorityTasks();
+            return refITasksBC.GetAllParentTasks();
         }
 
         // GET api/<controller>/5

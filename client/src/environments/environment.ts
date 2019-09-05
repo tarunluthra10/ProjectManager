@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  isMock: false,
-  baseApiUrl: 'http://localhost:7750/api/'
+  isMock: true,
+  baseApiUrl: 'http://localhost:4200/api/'  //'http://localhost:7750/api/'
 };
 
 /*

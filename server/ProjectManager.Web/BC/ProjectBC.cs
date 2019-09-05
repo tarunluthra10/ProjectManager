@@ -32,9 +32,9 @@ namespace ProjectManager.Web.BC
                    {
                        Completed = IsTaskCompleted(i.Project_ID),
                        EndDate = i.End_Date ?? DateTime.Now,
-                       ManagerId = GetManagerDetails(i.Project_ID).User_ID,
-                       ManagerName = String.Format(" ", GetManagerDetails(i.Project_ID).First_Name, GetManagerDetails(i.Project_ID).Last_Name),
-                       Priority = (int)i.Priority,
+                       ManagerId = GetManagerDetails(i.Project_ID) != null ? GetManagerDetails(i.Project_ID).User_ID : 0,
+                       ManagerName = String.Format(" ", GetManagerDetails(i.Project_ID)?.First_Name, GetManagerDetails(i.Project_ID)?.Last_Name),
+                       Priority = i.Priority??0,
                        ProjectId = i.Project_ID,
                        ProjectName = i.Project1,
                        StartDate = i.Start_Date ?? DateTime.Now,
@@ -50,20 +50,20 @@ namespace ProjectManager.Web.BC
 
         private string IsTaskCompleted(int ProjectId)
         {
-            var projectContext = entity.Set<Project>();
-            List<Task> task = entity.Set<Task>().Where(p => p.Parent_ID == ProjectId).Where(x => x.Status.Equals("false")).ToList();
+            var taskContext = entity.Set<Task>();
+            List<Task> task = taskContext.Where(p => p.Parent_ID == ProjectId).Where(x => x.Status.Equals("false")).ToList();
             return task.Any() ? "false" : "true";
         }
         private List<Task> GetTasks(int ProjectId)
         {
-            var projectContext = entity.Set<Project>();
-            List<Task> task = entity.Set<Task>().Where(p => p.Parent_ID == ProjectId).ToList();
+            var taskContext = entity.Set<Task>();
+            List<Task> task = taskContext.Where(p => p.Parent_ID == ProjectId).ToList();
             return task;
         }
         private User GetManagerDetails(int ProjectId)
         {
-            var projectContext = entity.Set<Project>();
-            var user = entity.Set<User>().FirstOrDefault(p => p.Project_ID == ProjectId);
+            var userContext = entity.Set<User>();
+            var user =userContext.FirstOrDefault(p => p.Project_ID == ProjectId);
             return user;
         }
 
@@ -97,7 +97,8 @@ namespace ProjectManager.Web.BC
                 });
                 entity.SaveChanges();
                 Project projectObj = GetProjectDetails(objProject.ProjectName);
-                var user = entity.Set<User>().FirstOrDefault(p => p.User_ID == objProject.ManagerId);
+                var userContext = entity.Set<User>();
+                var user = userContext.FirstOrDefault(p => p.User_ID == objProject.ManagerId);
                 user.Project_ID = projectObj.Project_ID;
             }
             catch (Exception ex)
@@ -113,15 +114,17 @@ namespace ProjectManager.Web.BC
             try
             {
                 var projectContext = entity.Set<Project>();
-
+                var userContext = entity.Set<User>();
                 var std = projectContext.Where(x => x.Project_ID == objProject.ProjectId).First<Project>();
                 std.Start_Date = objProject.StartDate;
                 std.End_Date = objProject.EndDate;
                 std.Project1 = objProject.ProjectName;
-                var user = entity.Set<User>().FirstOrDefault(p => p.Project_ID == objProject.ProjectId);
+               
+                var user = userContext.FirstOrDefault(p => p.Project_ID == objProject.ProjectId);
                 user.Project_ID = user.User_ID != objProject.ManagerId ? 0 : objProject.ProjectId;
-                var updatedManager = entity.Set<User>().FirstOrDefault(p => p.User_ID == objProject.ManagerId);
-                user.Project_ID = objProject.ProjectId;
+
+                var updatedManager = userContext.FirstOrDefault(p => p.User_ID == objProject.ManagerId);
+                updatedManager.Project_ID = objProject.ProjectId;
             }
             catch (Exception ex)
             {
@@ -136,10 +139,14 @@ namespace ProjectManager.Web.BC
             try
             {
                 var projectContext = entity.Set<Project>();
+                var userContext = entity.Set<User>() ;
+                var taskContext = entity.Set<Task>();
+                var std = projectContext.Where(x => x.Project_ID == objProject.ProjectId).FirstOrDefault<Project>();
 
-                var std = projectContext.Where(x => x.Project_ID == objProject.ProjectId).First<Project>();
-                var user = entity.Set<User>().FirstOrDefault(p => p.User_ID == objProject.ManagerId);
+                var user = userContext.FirstOrDefault(p => p.User_ID == objProject.ManagerId);
                 user.Project_ID = 0;
+                var task = taskContext.FirstOrDefault(p => p.Project_ID == objProject.ProjectId);
+                task.Project_ID = 0;
                 projectContext.Remove(std);
             }
             catch (Exception ex)

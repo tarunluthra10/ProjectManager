@@ -13,7 +13,7 @@ import { ApiService } from '../services/api.service';
 export class AddProjectComponent implements OnInit {
 
   public objProjectToPost: Project = new Project;
-  public listOfProjects: Array<Project>;
+  public listOfProjects: Array<Project> = new Array<Project>();
   public setDate: boolean = false;
   public isAdd: boolean = true;
   public sortByColumn: string = '';
@@ -41,7 +41,6 @@ export class AddProjectComponent implements OnInit {
   GetAllProject() {
     this.listOfProjects = new Array<Project>();
     this.refApiService.GetAllProjects().subscribe(res => {
-      console.log(res);
       for (let oneProject of res) {
         let abc = new Project();
         abc.ProjectId = oneProject.ProjectId;
@@ -72,14 +71,12 @@ export class AddProjectComponent implements OnInit {
 
 
   AddProject(objProject: Project): void {
-    console.log(objProject);
     if (this.ValidateProject(objProject)) {
       this.refApiService.AddNewProject(objProject).subscribe(res => { this.GetAllProject(); });
     }
   }
 
   UpdateProject(objProject: Project): void {
-    console.log(objProject);
     if (this.ValidateProject(objProject)) {
       this.refApiService.UpdateProject(objProject).subscribe(res => { 
         if(res)
@@ -115,7 +112,6 @@ export class AddProjectComponent implements OnInit {
 
   SearchManager() {
     const modalRef = this.modalService.open(this.searchMgrModal);
-    console.log(modalRef);
   }
 
   SelectedManagerClick(item: User) {

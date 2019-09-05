@@ -9,7 +9,7 @@ namespace ProjectManager.Web.BC
     public interface ITasksBC
     {
 
-        List<TaskItem> GetAllPriorityTasks();
+        List<TaskItem> GetAllParentTasks();
 
         List<TaskItem> GetAllTasks();
 

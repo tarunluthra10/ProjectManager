@@ -14,8 +14,8 @@ export class ViewTaskComponent implements OnInit {
 
   public objTaskToPost: Task = new Task;
   public sortByColumn: string = '';
-  public listOfTasks: Array<Task>;
-  public listOfProjects: Array<Project>;
+  public listOfTasks: Array<Task> = new Array<Task>();
+  public listOfProjects: Array<Project> = new Array<Project>();
   private selectedProjectId: number;
   public searchProjectName:string= '';
   public searchText:string= '';
@@ -49,7 +49,6 @@ export class ViewTaskComponent implements OnInit {
     this.listOfTasks = new Array<Task>();
     this.selectedProjectId = objProjectId;
     this.refApiService.GetAllTaskForProject(objProjectId).subscribe(res => {
-      console.log(res);
       for (let oneTask of res) {
         var abc = new Task();
         abc.ProjectId = oneTask.ProjectId;

@@ -20,20 +20,27 @@ namespace ProjectManager.Web.BC
         }
 
 
-        public List<TaskItem> GetAllPriorityTasks()
+        public List<TaskItem> GetAllParentTasks()
         {
             List<TaskItem> taskItem = new List<TaskItem>();
             try
             {
-                List<int> pTaskList = (from pTask in entity.Parent_Task
-                                       select pTask.Parent_ID) != null ? (from pTask in entity.Parent_Task
-                                                                select pTask.Parent_ID).ToList() : new List<int>();
+                List<string> pTaskList = (from pTask in entity.Parent_Task
+                                          select pTask.Parent_Task1) != null ? (from pTask in entity.Parent_Task
+                                                                                select pTask.Parent_Task1).ToList() : new List<string>();
                 List<Task> taskObj = new List<Task>();
 
-                taskObj = ((from task in entity.Tasks
-                               select task) != null ? (from task in entity.Tasks
-                                                       select task).ToList() : new List<Task>()).Where(m => pTaskList.Contains((int)m.Parent_ID)).ToList();
-                
+                //taskObj = ((from task in entity.Tasks
+                //               select task) != null ? (from task in entity.Tasks
+                //                                       select task).ToList() : new List<Task>()).Where(m => pTaskList.Contains((int)m.Parent_ID)).ToList();
+
+                taskObj = (from task in entity.Tasks
+                           select task) != null ?
+                           (from task in entity.Tasks
+                            select task).Where(m => pTaskList.Contains(m.Task1)).ToList()
+                           : new List<Task>();
+
+
                 taskItem = TaskMapping(taskObj);
             }
             catch (Exception ex)
@@ -72,9 +79,9 @@ namespace ProjectManager.Web.BC
                      Completed = i.Status,
                      EndDate = i.End_Date ?? DateTime.Now,
                      StartDate = i.Start_Date ?? DateTime.Now,
-                     IsParentTask = IsParentTask(i.Task_ID),
+                     IsParentTask = IsParentTask(i.Task1),
                      TaskName = i.Task1,
-                     Priority = (int)i.Priority,
+                     Priority = i.Priority ?? 0,
 
 
                  }).ToList();
@@ -86,9 +93,9 @@ namespace ProjectManager.Web.BC
             try
             {
                 taskObj = (from task in entity.Tasks
-                           where task.Project_ID==(projectId)
+                           where task.Project_ID == (projectId)
                            select task) != null ? (from task in entity.Tasks
-                                                   where task.Project_ID==(projectId)
+                                                   where task.Project_ID == (projectId)
                                                    select task).ToList() : new List<Task>();
             }
             catch (Exception ex)
@@ -112,11 +119,11 @@ namespace ProjectManager.Web.BC
             }
             return projectObj;
         }
-        private bool IsParentTask(int taskId)
+        private bool IsParentTask(string taskName)
         {
             var taskContext = entity.Set<Parent_Task>();
 
-            var std = taskContext != null ? taskContext.Where(x => x.Parent_ID == taskId).FirstOrDefault<Parent_Task>() : null;
+            var std = taskContext != null ? taskContext.Where(x => x.Parent_Task1.Equals(taskName)).FirstOrDefault<Parent_Task>() : null;
             return std != null ? true : false;
         }
         // POST api/<controller>
@@ -125,7 +132,8 @@ namespace ProjectManager.Web.BC
             try
             {
                 var taskContext = entity.Set<Task>();
-                if(objTask.ParentTaskId > 0)
+                var userContext = entity.Set<User>();
+                if (objTask.ParentTaskId > 0)
                 {
                     taskContext.Add(new Task
                     {
@@ -151,7 +159,7 @@ namespace ProjectManager.Web.BC
                         Priority = objTask.Priority
                     });
                 }
-                
+
 
                 if (objTask.IsParentTask)
                 {
@@ -163,7 +171,7 @@ namespace ProjectManager.Web.BC
                 }
                 entity.SaveChanges();
                 Task projectObj = GetTaskDetails(objTask.TaskName);
-                var user = entity.Set<User>().FirstOrDefault(p => p.User_ID == objTask.ManagerId);
+                var user = userContext.FirstOrDefault(p => p.User_ID == objTask.ManagerId);
                 user.Task_ID = projectObj.Task_ID;
             }
             catch (Exception ex)
@@ -195,7 +203,7 @@ namespace ProjectManager.Web.BC
             try
             {
                 var taskContext = entity.Set<Task>();
-                var std = taskContext.Where(x => x.Task_ID == objTask.TaskId).First<Task>();
+                var std = taskContext.Where(x => x.Task_ID == objTask.TaskId).FirstOrDefault<Task>();
                 std.Parent_ID = objTask.ParentTaskId;
 
                 std.Task1 = objTask.TaskName;
@@ -217,9 +225,9 @@ namespace ProjectManager.Web.BC
             try
             {
                 var taskContext = entity.Set<Task>();
-
-                var std = taskContext.Where(x => x.Task_ID == objTask.TaskId).First<Task>();
-                var user = entity.Set<User>().FirstOrDefault(p => p.Task_ID == objTask.TaskId);
+                var userContext = entity.Set<User>();
+                var std = taskContext.Where(x => x.Task_ID == objTask.TaskId).FirstOrDefault<Task>();
+                var user = userContext.FirstOrDefault(p => p.Task_ID == objTask.TaskId);
                 user.Task_ID = 0;
                 taskContext.Remove(std);
             }

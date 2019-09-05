@@ -112,7 +112,9 @@
     <Reference Include="System.Net.Http.WebRequest" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BC\UnitTest1.cs" />
+    <Compile Include="BC\ProjectUnitTest.cs" />
+    <Compile Include="BC\TaskUnitTest.cs" />
+    <Compile Include="BC\UserUnitTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

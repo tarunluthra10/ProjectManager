@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NgbModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from './modal.component';
 
 describe('ModalComponent', () => {
@@ -8,7 +8,13 @@ describe('ModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ModalComponent ]
+      imports: [
+        NgbModule
+      ],
+      declarations: [ ModalComponent ],
+      providers : [
+        NgbActiveModal
+      ]
     })
     .compileComponents();
   }));

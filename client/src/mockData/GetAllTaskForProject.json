@@ -1,0 +1,32 @@
+[
+    {
+        "TaskId": 0,
+        "TaskName": "Task 1",
+        "IsParentTask": true,
+        "ProjectId": 0,
+        "ProjectName": null,
+        "ManagerId": 0,
+        "ManagerName": null,
+        "Priority": 6,
+        "StartDate": "2019-09-06T00:00:00",
+        "EndDate": "2019-09-08T00:00:00",
+        "Completed": "NC",
+        "ParentTaskId": 0,
+        "ParentTaskName": null
+    },
+    {
+        "TaskId": 0,
+        "TaskName": "Task 3",
+        "IsParentTask": false,
+        "ProjectId": 0,
+        "ProjectName": null,
+        "ManagerId": 0,
+        "ManagerName": null,
+        "Priority": 6,
+        "StartDate": "2019-09-06T00:00:00",
+        "EndDate": "2019-09-08T00:00:00",
+        "Completed": "NC",
+        "ParentTaskId": 0,
+        "ParentTaskName": null
+    }
+]
