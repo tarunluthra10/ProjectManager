@@ -30,7 +30,6 @@ export class ViewTaskComponent implements OnInit {
   GetAllProject() {
     this.listOfProjects = new Array<Project>();
     this.refApiService.GetAllProjects().subscribe(res => {
-      console.log(res);
       for (let oneProject of res) {
         let abc = new Project();
         abc.ProjectId = oneProject.ProjectId;

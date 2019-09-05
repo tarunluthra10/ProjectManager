@@ -19,14 +19,6 @@ constructor( private router: Router,
       .subscribe(event => {
         this.selectedRoute = event.url != '/' ? event.url : '/addproject';
       });
-
-// refApiService.GetProduct().subscribe((result) => {
-//   alert('In Subscribe');
-//   console.log(result);
-// }, (err) => {
-//   alert('In Error');
-//   console.log(err);
-// });
 }
 
 

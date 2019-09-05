@@ -211,8 +211,8 @@
     <Content Include="dist\3rdpartylicenses.txt" />
     <Content Include="dist\favicon.ico" />
     <Content Include="dist\index.html" />
-    <Content Include="dist\main-es2015.69c9efce17948707a868.js" />
-    <Content Include="dist\main-es5.69c9efce17948707a868.js" />
+    <Content Include="dist\main-es2015.ee13951e0d35d37dc9d6.js" />
+    <Content Include="dist\main-es5.ee13951e0d35d37dc9d6.js" />
     <Content Include="dist\polyfills-es2015.fd917e7c3ed57f282ee5.js" />
     <Content Include="dist\polyfills-es5.f24fb8cb85b392c952f0.js" />
     <Content Include="dist\runtime-es2015.24b02acc1f369d9b9f37.js" />

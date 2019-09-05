@@ -64,7 +64,6 @@ export class AddUserComponent implements OnInit {
 
   DeleteUser(objUser: User): void {
     this.refApiService.RemoveUser(objUser).subscribe(res => {
-      console.log(res);
       this.GetAllUsersData();
     });
   }
